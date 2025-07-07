@@ -1,0 +1,42 @@
+<group name="sophos_fw_ng">
+    <rule id="113800" level="0">
+        <decoded_as>sophos-fw-ng</decoded_as>
+        <description>Sophos Firewall event</description>
+    </rule>
+
+    <!-- Existing firewall rules -->
+    <rule id="113801" level="5">
+        <if_sid>113800</if_sid>
+        <field name="log_type">Firewall</field>
+        <field name="log_subtype">Denied</field>
+        <description>Traffic Denied: from $(src_ip) to $(dst_ip)</description>
+    </rule>
+
+    <!-- more existing rules... -->
+
+    <!-- 🆕 WAF Rules -->
+    <rule id="113900" level="0">
+        <if_sid>113800</if_sid>
+        <field name="log_type">WAF</field>
+        <description>Sophos Web Application Firewall event</description>
+    </rule>
+
+    <rule id="113901" level="5">
+        <if_sid>113900</if_sid>
+        <field name="log_component">Web Application Firewall</field>
+        <description>WAF Alert: $(message)</description>
+    </rule>
+
+    <rule id="113902" level="3">
+        <if_sid>113900</if_sid>
+        <field name="log_component">Web Application Firewall</field>
+        <description>WAF Info: $(message)</description>
+    </rule>
+
+    <rule id="113903" level="5">
+        <if_sid>113900</if_sid>
+        <field name="log_component">Web Application Firewall</field>
+        <regex>the average number of logs between</regex>
+        <description>WAF Anomaly: $(message)</description>
+    </rule>
+</group>
